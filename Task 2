@@ -1,0 +1,42 @@
+# Summary Statistics for Each City
+summary_stats = {}
+
+# Compute mean, median, and standard deviation for temperature and precipitation
+for col in numeric_columns:
+    summary_stats[col] = {
+        "Mean": data[col].mean(),
+        "Median": data[col].median(),
+        "Standard Deviation": data[col].std(),
+    }
+
+# Convert the summary statistics into a DataFrame for better visualization
+summary_stats_df = pd.DataFrame(summary_stats).T
+print("Summary Statistics for Temperature and Precipitation Data:\n")
+print(summary_stats_df)
+
+# Relationship Analysis: Correlation Coefficient
+# Calculate correlations between temperature and precipitation for each city
+correlation_results = {}
+city_pairs = [
+    ("temperature_city1", "precipitation_city1"),
+    ("temperature_city2", "precipitation_city2"),
+    ("temperature_city3", "precipitation_city3"),
+]
+
+for temp_col, precip_col in city_pairs:
+    correlation_results[f"{temp_col} vs {precip_col}"] = data[temp_col].corr(data[precip_col])
+
+# Display the correlation results
+print("\nCorrelation Coefficients between Temperature and Precipitation:\n")
+for pair, correlation in correlation_results.items():
+    print(f"{pair}: {correlation:.2f}")
+
+# Interpretation of Correlations
+print("\nInterpretation of Correlations:")
+for pair, correlation in correlation_results.items():
+    if correlation > 0.5:
+        print(f"{pair}: Strong positive correlation. Higher temperatures are associated with increased precipitation.")
+    elif correlation < -0.5:
+        print(f"{pair}: Strong negative correlation. Higher temperatures are associated with decreased precipitation.")
+    else:
+        print(f"{pair}: Weak or no correlation between temperature and precipitation.")
