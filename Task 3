@@ -1,0 +1,37 @@
+import matplotlib.pyplot as plt
+
+# Ensure 'month' column is datetime for proper plotting
+data['month'] = pd.to_datetime(data['month'])
+
+# Plot Temperature and Precipitation Over Time for Each City
+cities = [
+    ("temperature_city1", "precipitation_city1", "City 1"),
+    ("temperature_city2", "precipitation_city2", "City 2"),
+    ("temperature_city3", "precipitation_city3", "City 3"),
+]
+
+# Create a plot for each city
+for temp_col, precip_col, city_name in cities:
+    plt.figure(figsize=(12, 6))
+    plt.plot(data['month'], data[temp_col], label="Temperature (°C)", color="red")
+    plt.plot(data['month'], data[precip_col], label="Precipitation (mm)", color="blue")
+    
+    plt.title(f"Temperature and Precipitation Over Time ({city_name})", fontsize=14)
+    plt.xlabel("Month")
+    plt.ylabel("Value")
+    plt.legend()
+    plt.grid()
+    plt.tight_layout()
+    plt.show()
+# Multi-line chart for temperature trends across all cities
+plt.figure(figsize=(12, 6))
+for i, city in enumerate(["temperature_city1", "temperature_city2", "temperature_city3"], start=1):
+    plt.plot(data['month'], data[city], label=f"City {i}")
+
+plt.title("Comparative Temperature Trends Across Cities", fontsize=14)
+plt.xlabel("Month")
+plt.ylabel("Temperature (°C)")
+plt.legend()
+plt.grid()
+plt.tight_layout()
+plt.show()
