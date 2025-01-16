@@ -1,0 +1,39 @@
+import pandas as pd
+import numpy as np
+
+# Load the dataset
+
+data = pd.read_csv('Scenario_A.csv')
+
+# Inspect for missing values
+missing_values = data.isnull().sum()
+print("Number of Missing Values in Each Column:\n", missing_values)
+
+# Strategy for handling missing values:
+# - Replace missing values for numerical columns with the column's mean.
+# - Drop rows if missing values exist in non-numerical columns.
+numeric_columns = data.select_dtypes(include=[np.number]).columns
+data[numeric_columns] = data[numeric_columns].fillna(data[numeric_columns].mean())
+
+# Inspect for outliers using the IQR method
+outliers_info = {}
+for col in numeric_columns:
+    Q1 = data[col].quantile(0.25)
+    Q3 = data[col].quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    outliers = data[(data[col] < lower_bound) | (data[col] > upper_bound)]
+    outliers_info[col] = len(outliers)
+    # Strategy: Replace outliers with the column's mean
+    data.loc[data[col] < lower_bound, col] = data[col].mean()
+    data.loc[data[col] > upper_bound, col] = data[col].mean()
+
+print("\nNumber of Outliers in Each Column (Using IQR Method):\n", outliers_info)
+
+# Convert 'month' to datetime
+data['month'] = pd.to_datetime(data['month'], errors='coerce')
+
+# Final check on missing values
+missing_values_after_cleaning = data.isnull().sum()
+print("\nNumber of Missing Values After Cleaning:\n", missing_values_after_cleaning)
